@@ -35,21 +35,20 @@ jobs:
           chmod +x terragrunt
           sudo mv terragrunt /usr/local/bin/
 
-#      - name: Configure AWS Credentials
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: ${{ env.AWS_REGION }}
+      - name: List Files (Debugging Step)
+        run: ls -R  # This step will list all files in the repository to help identify the correct path.
 
       - name: Terragrunt Init
         run: terragrunt init
+        working-directory: terraform/test  # Update to the correct path of your terragrunt.hcl file
 
       - name: Terragrunt Plan
         id: plan
         run: terragrunt plan
         continue-on-error: true
+        working-directory: terraform/test  # Update to the correct path of your terragrunt.hcl file
 
       - name: Terragrunt Apply
         if: github.ref == 'refs/heads/main'
         run: terragrunt apply -auto-approve
+        working-directory: terraform/test  # Update to the correct path of your terragrunt.hcl file
