@@ -20,10 +20,10 @@ jobs:
       TF_VERSION: "1.4.0"  # Set your preferred Terraform version
       TERRAGRUNT_VERSION: "0.45.3"  # Set your preferred Terragrunt version
 
-    defaults:
-      run:
-        working-directory: terraform/test  # Set the default working directory
-
+ #   defaults:
+#      run:
+#        working-directory: terraform/test  # Set the default working directory
+#
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
