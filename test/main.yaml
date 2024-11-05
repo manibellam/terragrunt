@@ -2,7 +2,6 @@ resource "null_resource" "test" {
   provisioner "local-exec" {
     command = "echo 'This is a test resource created by Terragrunt!'"
   }
-
   triggers = {
     always_run = "${timestamp()}"
   }
