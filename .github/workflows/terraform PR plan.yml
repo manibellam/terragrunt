@@ -1,0 +1,40 @@
+name: Terraform PR Plan
+
+on:
+  pull_request:
+    paths:
+      - 'terraform/**'   # This triggers the workflow only if files in the `terraform/` directory are modified
+
+jobs:
+  plan:
+    name: Terraform Plan for Changed Paths
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: us-east-1
+      TF_VERSION: "1.4.0"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Get Changed Files
+        id: changes
+        run: |
+          echo "Checking for changes in the terraform directory..."
+          CHANGED_PATHS=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^terraform/' | xargs -n1 dirname | sort -u)
+          echo "Changed paths: $CHANGED_PATHS"
+          echo "CHANGED_PATHS=$CHANGED_PATHS" >> $GITHUB_ENV
+
+      - name: Run Terraform Plan for Each Changed Path
+        if: env.CHANGED_PATHS != ''
+        run: |
+          for path in $CHANGED_PATHS; do
+            echo "Running terraform plan for $path"
+            (cd $path && terraform init -backend=false && terraform plan)
+          done
