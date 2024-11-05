@@ -34,9 +34,9 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - name: Set up Terragrunt
-        uses: AutonomoDev/setup-terragrunt@v1
+        uses: autero1/action-terragrunt@v3
         with:
-          terragrunt_version: ${{ env.TERRAGRUNT_VERSION }}
+          terragrunt-version: ${{ env.TERRAGRUNT_VERSION }}
 
       - name: Terragrunt Init
         run: terragrunt init
