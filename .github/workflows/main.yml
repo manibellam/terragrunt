@@ -16,14 +16,13 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AWS_REGION: us-east-1  # Set your preferred AWS region
-      TERRAGRUNT_VERSION: "0.45.3"  # Set your preferred Terragrunt version
+      AWS_REGION: us-east-1
       TF_VERSION: "1.4.0"  # Set your preferred Terraform version
+      TERRAGRUNT_VERSION: "0.45.3"  # Set your preferred Terragrunt version
+
     defaults:
       run:
         working-directory: terraform/test  # Set the default working directory
-  
-    
 
     steps:
       - name: Checkout Repository
@@ -34,26 +33,19 @@ jobs:
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
-      - name: Install Terragrunt
-        run: |
-          curl -L https://github.com/gruntwork-io/terragrunt/releases/download/v${{ env.TERRAGRUNT_VERSION }}/terragrunt_linux_amd64 -o terragrunt
-          chmod +x terragrunt
-          sudo mv terragrunt /usr/local/bin/
-
-      - name: List Files (Debugging Step)
-        run: ls -R  # This step will list all files in the repository to help identify the correct path.
+      - name: Set up Terragrunt
+        uses: AutonomoDev/setup-terragrunt@v1
+        with:
+          terragrunt_version: ${{ env.TERRAGRUNT_VERSION }}
 
       - name: Terragrunt Init
         run: terragrunt init
-        working-directory: terraform/test  # Update to the correct path of your terragrunt.hcl file
 
       - name: Terragrunt Plan
         id: plan
         run: terragrunt plan
         continue-on-error: true
-        working-directory: terraform/test  # Update to the correct path of your terragrunt.hcl file
 
       - name: Terragrunt Apply
         if: github.ref == 'refs/heads/main'
         run: terragrunt apply -auto-approve
-        working-directory: terraform/test  # Update to the correct path of your terragrunt.hcl file
