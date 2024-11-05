@@ -28,6 +28,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Show Current Directory
+        run: pwd  # Displays the current working directory
+
+      - name: List Files in Root Directory
+        run: ls -ld  
+  
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
